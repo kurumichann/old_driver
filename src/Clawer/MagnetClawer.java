@@ -21,6 +21,8 @@ import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import net.sf.json.JSONArray;
+
 public class MagnetClawer {
 
 	public String website = null;
@@ -38,7 +40,6 @@ public class MagnetClawer {
 	public static HashSet<String> magnet_list;
 	public int count = 0;
 	public String content = "";
-	public int number = 0;
 	public String get_response_html(String url) throws Exception{
 			Connection connection  = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 ??+"
 					+ "??(KHTML, like Gecko) Chrome/47.0.2526.106 Safari/537.36");
@@ -171,13 +172,7 @@ public class MagnetClawer {
 				System.out.println("current depth??  "+depth+"  current url:  "+url);
 				System.out.println(title+"  "+magnets.toString());
 				count++;
-				number++;
-				System.out.println("Count: "+count);		
-				System.out.println(number);
-				if(count%200 == 0){
-					System.out.println(magnets.size()+"  articles");
-					count = 0;
-				}
+				System.out.println("Count: "+count);
 			}
 			visitedList.add(url);
 		}catch(HttpStatusException e){
@@ -208,8 +203,8 @@ public class MagnetClawer {
 
 		}
 		System.out.println("========IO=======");
-		rw.WriteFile(RWJson.RESOURCEPATH, content);
-		rw.SetRows(number); 
+		rw.WriteFile(RWJson.RESOURCEPATH, "[\n"+content.substring(0, text.length()-1)+"\n]");
+		rw.SetRows(count); 
 		rw.set_viewed_list(visitedList);
 
 	}
@@ -235,8 +230,14 @@ public class MagnetClawer {
 		magnet_list = new HashSet<>();
 		clawer.initialnization(rw);
 		clawer.scan_url(web, 0, rw);
-		
-		
+		JSONArray arr = rw.incremental_add_arr();
+		if( rw.INCREMENT_COUNT > 0){
+			System.out.println("新增了"+rw.INCREMENT);
+			rw.write_json_arr(arr);
+			rw.SetRows(arr.size());
+			rw.incremental_add_list();
+		}
+		rw.set_incremental_count(rw.INCREMENT_COUNT);
 	}
 	
 }
