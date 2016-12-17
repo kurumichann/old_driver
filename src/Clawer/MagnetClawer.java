@@ -169,7 +169,7 @@ public class MagnetClawer {
 				}else{
 					content += "\n              \""+magnets.get(0)+"\"\n            ]\n},";
 				}
-				System.out.println("current depth??  "+depth+"  current url:  "+url);
+				System.out.println("current depth: "+depth+"  current url:  "+url);
 				System.out.println(title+"  "+magnets.toString());
 				count++;
 				System.out.println("Count: "+count);
@@ -203,7 +203,7 @@ public class MagnetClawer {
 
 		}
 		System.out.println("========IO=======");
-		rw.WriteFile(RWJson.RESOURCEPATH, "[\n"+content.substring(0, text.length()-1)+"\n]");
+		rw.WriteFile(RWJson.RESOURCEPATH, "[\n"+content.substring(0, content.length()-1)+"\n]");
 		rw.SetRows(count); 
 		rw.set_viewed_list(visitedList);
 
@@ -211,7 +211,6 @@ public class MagnetClawer {
 	public void initialnization(RWJson rw){
 		/*this.visitedList = rw.get_viewed_list();*/
 		MagnetClawer.visitedList = new HashSet<>();
-		rw.load_magnet_list(magnet_list);
 
 	}
 	public static void  main(String args[]){

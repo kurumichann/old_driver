@@ -25,7 +25,7 @@ public class RWJson {
 	static String  RESOURCEBAKPATH = "resourcelist_bak.json";
 	static String  NUMPATH = "totalrows.text";
 	static String  VIEWED = "viewed_list.text";
-	static String VIEWEDBAK = "viewed_list_bak.text";
+	static String  VIEWEDBAK = "viewed_list_bak.text";
 	static String  INCREMENT = "incremental_count.text";
 	static int INCREMENT_COUNT = 0;
 	
