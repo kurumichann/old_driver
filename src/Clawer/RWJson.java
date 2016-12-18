@@ -21,11 +21,17 @@ public class RWJson {
 
 	// for sever delete src/Clawer/
 	// for local env make sure prefix is "src/Clawer/" 
+//	static String  RESOURCEPATH = "src/Clawer/resourcelist.json";
+//	static String  RESOURCEBAKPATH = "src/Clawer/resourcelist_bak.json";
+//	static String  NUMPATH = "src/Clawer/totalrows.text";
+//	static String  VIEWED = "src/Clawer/viewed_list.text";
+//	static String  VIEWEDBAK = "src/Clawer/viewed_list_bak.text";
+//	static String  INCREMENT = "src/Clawer/incremental_count.text";
 	static String  RESOURCEPATH = "resourcelist.json";
-	static String  RESOURCEBAKPATH = "resourcelist_bak.json";
+	static String  RESOURCEBAKPATH = "bak/resourcelist_bak.json";
 	static String  NUMPATH = "totalrows.text";
 	static String  VIEWED = "viewed_list.text";
-	static String  VIEWEDBAK = "viewed_list_bak.text";
+	static String  VIEWEDBAK = "bak/viewed_list_bak.text";
 	static String  INCREMENT = "incremental_count.text";
 	static int INCREMENT_COUNT = 0;
 	
@@ -43,15 +49,9 @@ public class RWJson {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println(laststr);
 		JSONArray jsonArray = JSONArray.fromObject(laststr);
 		return jsonArray;
-//		int size = jsonArray.size();
-//		System.out.println("Size: " + size);
-//		for (int i = 0; i < size; i++) {
-//			JSONObject jsonObject = jsonArray.getJSONObject(i);
-//			System.out.println("[" + i + "]title=" + jsonObject.get("title"));
-//			System.out.println("[" + i + "]magnet=" + jsonObject.get("magnet"));
-//		}
 	}
 	
 	public void WriteFile(String path, String text){
@@ -293,6 +293,6 @@ public class RWJson {
 	}
 //	public static void main(String[] args) {
 //		RWJson json = new RWJson();
-//		json.incremental_add_list();;
+//		json.incremental_add_arr();
 //	}
 }
