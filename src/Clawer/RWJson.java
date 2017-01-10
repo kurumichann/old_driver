@@ -49,7 +49,6 @@ public class RWJson {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println(laststr);
 		JSONArray jsonArray = JSONArray.fromObject(laststr);
 		return jsonArray;
 	}
@@ -115,7 +114,7 @@ public class RWJson {
 	public void SetRows(int number){
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(NUMPATH));
-			writer.write(String.valueOf(number));
+			writer.write("total="+String.valueOf(number));
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
@@ -189,7 +188,6 @@ public class RWJson {
 			for( int j = 0 ; j < sizeo ; j++){
 				String temp1 = (String) newArray.getJSONObject(i).get("title");
 				String temp2 = (String) oldArray.getJSONObject(j).get("title");
-//				System.out.println(temp1+" vs "+temp2);
 				if(temp1.equals(temp2)){
 					break;
 				}

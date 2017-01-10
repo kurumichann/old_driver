@@ -231,7 +231,7 @@ public class MagnetClawer {
 		clawer.scan_url(web, 0, rw);
 		JSONArray arr = rw.incremental_add_arr();
 		if( rw.INCREMENT_COUNT > 0){
-			System.out.println("新增了"+rw.INCREMENT);
+			System.out.println("新增了"+rw.INCREMENT_COUNT);
 			rw.write_json_arr(arr);
 			rw.SetRows(arr.size());
 			rw.incremental_add_list();
