@@ -33,7 +33,9 @@ public class RWJson {
 	static String  VIEWED = "viewed_list.text";
 	static String  VIEWEDBAK = "bak/viewed_list_bak.text";
 	static String  INCREMENT = "incremental_count.text";
-	static int INCREMENT_COUNT = 0;
+	static String  INCREMENT_LIST_PATH = "incremental_list.text";
+	static String  INCREMENTAL_LIST = "";
+	static int	   INCREMENT_COUNT = 0;
 	
 	public JSONArray ReadFile(String path) {
 		BufferedReader reader = null;
@@ -131,9 +133,19 @@ public class RWJson {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	public void set_incremental_list(String list){
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(INCREMENT_LIST_PATH));
+			writer.write("list='"+list+"'");http://221.176.66.85:81/wlan-portal-web/portal/free/images/index_top01.jpg
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	public void set_viewed_list(HashSet<String> list){
 		Iterator<String> iterator = list.iterator();
@@ -193,9 +205,13 @@ public class RWJson {
 				}
 				if( (!temp1.equals(temp2)) && j == sizeo-1){
 					INCREMENT_COUNT++;
+					INCREMENTAL_LIST += temp1+",";
 					oldArray.add(newArray.getJSONObject(i));
 				}
 			}
+		}
+		if(INCREMENT.length() != 0){
+			INCREMENTAL_LIST = INCREMENTAL_LIST.substring(0, INCREMENTAL_LIST.length()-1);
 		}
 		return oldArray;
 	}

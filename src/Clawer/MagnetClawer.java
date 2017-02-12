@@ -52,8 +52,7 @@ public class MagnetClawer {
 	public ArrayList<String> get_magnet(String text){
 	    ArrayList<String> temp = new ArrayList<>();
 	    LinkedList<String> magnets = get_group_list(text, get_magnet_pattern);
-	    
-	    /*ȥ??ͷ??β??ʣ?µĲ??־Ϳ???ʳ????*/
+	   
 	    for(String magnet : magnets){
 	    	
 	    	magnet = magnet.replace("[\\u4e00-\\u9fa5]*", "");
@@ -113,12 +112,6 @@ public class MagnetClawer {
 	}
 	
 	public boolean check_a_label(String label, String url){
-		/*if(label.startsWith("http")||label.startsWith("www.")){
-			
-		}
-		
-		*??ʱֻ??????????Orz
-		*/
 		if(label.contains("#comment")||label.contains("?replytocom")){
 			return false;
 		}
@@ -211,7 +204,6 @@ public class MagnetClawer {
 	public void initialnization(RWJson rw){
 		/*this.visitedList = rw.get_viewed_list();*/
 		MagnetClawer.visitedList = new HashSet<>();
-
 	}
 	public static void  main(String args[]){
 		
@@ -230,13 +222,15 @@ public class MagnetClawer {
 		clawer.initialnization(rw);
 		clawer.scan_url(web, 0, rw);
 		JSONArray arr = rw.incremental_add_arr();
-		if( rw.INCREMENT_COUNT > 0){
-			System.out.println("新增了"+rw.INCREMENT_COUNT);
+		
+		if( RWJson.INCREMENT_COUNT > 0){
+			System.out.println("新增了"+RWJson.INCREMENT_COUNT);
 			rw.write_json_arr(arr);
 			rw.SetRows(arr.size());
 			rw.incremental_add_list();
 		}
-		rw.set_incremental_count(rw.INCREMENT_COUNT);
+		rw.set_incremental_list(RWJson.INCREMENTAL_LIST);
+		rw.set_incremental_count(RWJson.INCREMENT_COUNT);
 	}
 	
 }
