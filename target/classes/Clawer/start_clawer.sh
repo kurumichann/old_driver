@@ -2,8 +2,8 @@
 
 TIME_BEGIN=$(date +%F" "%T);
 echo "少看本子多开车，开始摸神社啦:                     "$TIME_BEGIN | tee -a /usr/zhongbingyi/time_log.text;
-. /usr/zhongbingyi/clean.sh;
 . /usr/zhongbingyi/backup.sh;
+. /usr/zhongbingyi/clean.sh;
 java -jar /usr/zhongbingyi/MagnetClawer.jar 1>/usr/zhongbingyi/out.log 2>/usr/zhongbingyi/error.log;
 . /usr/zhongbingyi/incremental_count.text;
 . /usr/zhongbingyi/totalrows.text;
