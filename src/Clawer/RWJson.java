@@ -17,12 +17,12 @@ public class RWJson {
 
 	// for sever delete src/Clawer/
 	// for local env make sure prefix is "src/Clawer/" 
-//	static String  RESOURCEPATH = "src/Clawer/resourcelist.json";
-//	static String  RESOURCEBAKPATH = "src/Clawer/resourcelist_bak.json";
 //	static String  NUMPATH = "src/Clawer/totalrows.text";
 //	static String  VIEWED = "src/Clawer/viewed_list.text";
 //	static String  VIEWEDBAK = "src/Clawer/viewed_list_bak.text";
 //	static String  INCREMENT = "src/Clawer/incremental_count.text";
+//	static String  RESOURCEPATH = "src/Clawer/resourcelist.json";
+//	static String  RESOURCEBAKPATH = "src/Clawer/resourcelist_bak.json";
 	static String  RESOURCEPATH = "resourcelist.json";
 	static String  RESOURCEBAKPATH = "bak/resourcelist_bak.json";
 	static String  NUMPATH = "totalrows.text";
@@ -194,12 +194,16 @@ public class RWJson {
 		int sizeo = oldArray.size();
 		for( int i = 0 ; i < sizen ; i++){
 			for( int j = 0 ; j < sizeo ; j++){
-				String temp1 = (String) newArray.getJSONObject(i).get("title");
-				String temp2 = (String) oldArray.getJSONObject(j).get("title");
+				JSONObject obn = newArray.getJSONObject(i);
+				JSONObject obo = oldArray.getJSONObject(i);
+				String temp1 = (String) obn.get("title");
+				String temp2 = (String) obo.get("title");
 				if(temp1.equals(temp2)){
+					oldArray.getJSONObject(j).putIfAbsent("url", obn.get("url"));
 					break;
 				}
 				if( (!temp1.equals(temp2)) && j == sizeo-1){
+					System.out.println(temp1);
 					INCREMENT_COUNT++;
 					INCREMENTAL_LIST += temp1+",";
 					oldArray.add(newArray.getJSONObject(i));
@@ -227,7 +231,7 @@ public class RWJson {
 				for(int j = 0 ; j < length ; j++){
 					if(j == length - 1){
 						if( i == size-1 ){
-							content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ]\n}";
+							content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
 							break;
 						}
 						content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ]\n},";
@@ -242,10 +246,10 @@ public class RWJson {
 				}
 			}else{
 				if( i == size-1 ){
-					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ]\n}";
+					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
 					break;
 				}
-				content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ]\n},";
+				content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ],\n  \"url\" : \""+job.getString("url")+"\"\n},";
 			}
 		}
 		WriteFile(RESOURCEPATH, "["+content+"\n]");

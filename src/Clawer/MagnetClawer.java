@@ -137,13 +137,13 @@ public class MagnetClawer {
 				if(magnets.size() > 1){
 					for(int i = 0 ; i < magnets.size() ; i++){
 						if(i == magnets.size() - 1){
-							content += "\n              \""+magnets.get(i)+"\"\n           ]\n},";
+							content += "\n              \""+magnets.get(i)+"\"\n           ],\n  \"url\" : \""+url+"\"\n},";
 							break;
 						}
 						content += "\n              \""+magnets.get(i)+"\",";
 					}
 				}else{
-					content += "\n              \""+magnets.get(0)+"\"\n            ]\n},";
+					content += "\n              \""+magnets.get(0)+"\"\n            ],\n  \"url\" : \""+url+"\"\n},";
 				}
 				System.out.println("current depth: "+depth+"  current url:  "+url);
 				System.out.println(title+"  "+magnets.toString());
