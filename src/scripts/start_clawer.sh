@@ -1,13 +1,13 @@
 #bin/bash
-
+export dir=/home/clawer
 TIME_BEGIN=$(date +%F" "%T);
-echo "少看本子多开车，开始摸神社啦:                     "$TIME_BEGIN | tee -a /usr/zhongbingyi/time_log.text;
-. /usr/zhongbingyi/backup.sh;
-. /usr/zhongbingyi/clean.sh;
-java -jar /usr/zhongbingyi/MagnetClawer.jar 1>/usr/zhongbingyi/out.log 2>/usr/zhongbingyi/error.log;
-. /usr/zhongbingyi/incremental_count.text;
-. /usr/zhongbingyi/totalrows.text;
-. /usr/zhongbingyi/incremental_list.text;
+echo "少看本子多开车，开始摸神社啦:                     "$TIME_BEGIN | tee -a time_log.text;
+. $dir/backup.sh;
+. $dir/clean.sh;
+java -jar $dir/MagnetClawer.jar 1>out.log 2>error.log;
+. $dir/incremental_count.text;
+. $dir/totalrows.text;
+. $dir/incremental_list.text;
 TIME_END=$(date +%F" "%T);
 if [ $count -gt 0 ];
 then
@@ -18,5 +18,5 @@ uuencode resourcelist.json resourcelist.json|mail -s "来不及解释了" 349494
 else
 echo "woc白摸了这么久:                     "$TIME_END | tee -a time_log.text;
 echo "===========================" | tee -a time_log.text;
-. /usr/zhongbingyi/recovery.sh;
+. recovery.sh;
 fi;

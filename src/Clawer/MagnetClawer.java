@@ -1,25 +1,17 @@
 package Clawer;
 
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Scanner;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.jsoup.Connection;
-import org.jsoup.Connection.Response;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import net.sf.json.JSONArray;
 
@@ -38,7 +30,8 @@ public class MagnetClawer {
 	public List<Map<String, String>> resourceList;
 	public static HashSet<String> visitedList;
 	public static HashSet<String> magnet_list;
-	public int count = 0;
+	public int COUNT = 0;
+	public static int RETRY = 5;
 	public String content = "";
 	public String get_response_html(String url) throws Exception{
 			Connection connection  = Jsoup.connect(url).userAgent("Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 ??+"
@@ -97,13 +90,7 @@ public class MagnetClawer {
 				
 			}
 			href = temp.substring(quote_start, quote_end);
-			if(check_a_label(href, url)){
-				if(href.startsWith("/")){
-				   href = url+href;
-				}				
-				if(visitedList.contains(href)){
-					continue;
-				}
+			if(check_a_label(href) && !visitedList.contains(href)){
 				list.add(href);
 			}
 			
@@ -111,16 +98,13 @@ public class MagnetClawer {
 		return list;
 	}
 	
-	public boolean check_a_label(String label, String url){
+	public boolean check_a_label(String label){
 		if(label.contains("#comment")||label.contains("?replytocom")){
 			return false;
 		}
-		if(label.contains("www.hacg.li")||label.contains("www.hacg.fi")){
+		if(label.contains("www.hacg.li")||label.contains("www.hacg.fi")||label.contains("www.hacg.wiki")){
 			return true;
 		}
-/*		if(label.startsWith("/")){
-			return true;
-		}*/
 		return false;
 	}
 	
@@ -133,9 +117,8 @@ public class MagnetClawer {
 		return result;
 	}
 	
-	public void scan_url(String url, int depth, RWJson rw) {
+	public void scan_url(String url, int depth, RWJson rw,int retry_counts) {
 
-		
 		ArrayList<String> magnets;
 		ArrayList<String> sub_links;
 		try {
@@ -164,8 +147,8 @@ public class MagnetClawer {
 				}
 				System.out.println("current depth: "+depth+"  current url:  "+url);
 				System.out.println(title+"  "+magnets.toString());
-				count++;
-				System.out.println("Count: "+count);
+				COUNT++;
+				System.out.println("Count: "+COUNT);
 			}
 			visitedList.add(url);
 		}catch(HttpStatusException e){
@@ -173,15 +156,21 @@ public class MagnetClawer {
 			if(e.toString().contains("Status=4")){
 				return;
 			}
-			scan_url(url, depth, rw);
+			if( retry_counts != 0){
+				scan_url(url, depth, rw, retry_counts-1);
+			}
 			return;
 		}catch (SocketTimeoutException e){
 			System.out.println("read time out, reconnect...  url:  "+url);
-			scan_url(url, depth, rw);
+			if( retry_counts != 0){
+				scan_url(url, depth, rw, retry_counts-1);
+			}
 			return;
 		}catch (Exception e) {
 			e.printStackTrace();
-			scan_url(url, depth, rw);
+			if( retry_counts != 0){
+				scan_url(url, depth, rw, retry_counts-1);
+			}
 			return;
 		}
 		if(depth > MAXDEPTH){
@@ -192,12 +181,17 @@ public class MagnetClawer {
 			if (visitedList.contains(sub_url)) {
 				continue;
 			}
-			scan_url(sub_url, depth+1, rw);
+			if( retry_counts != 0 && !sub_url.equals("http://www.hacg.wiki/wp/")){
+				scan_url(sub_url, depth, rw, retry_counts-1);
+			}
 
+		}
+		if( content.length() == 0 ){
+			return;
 		}
 		System.out.println("========IO=======");
 		rw.WriteFile(RWJson.RESOURCEPATH, "[\n"+content.substring(0, content.length()-1)+"\n]");
-		rw.SetRows(count); 
+		rw.SetRows(COUNT); 
 		rw.set_viewed_list(visitedList);
 
 	}
@@ -207,20 +201,20 @@ public class MagnetClawer {
 	}
 	public static void  main(String args[]){
 		
-		System.setProperty("http.proxySet", "true"); 
-		System.setProperty("http.proxyHost", "127.0.0.1"); 
-		System.setProperty("http.proxyPort", "1080");
+//		System.setProperty("http.proxySet", "true"); 
+//		System.setProperty("http.proxyHost", "127.0.0.1"); 
+//		System.setProperty("http.proxyPort", "1081");
 		
 //		Scanner sc = new Scanner(System.in);
 //		System.out.println("type the website we'll search");
 //		String web = sc.next();
 //		sc.close();
-		String web = "http://www.hacg.fi/wp/25470.html";
+		String web = "http://www.hacg.wiki/wp/";
 		MagnetClawer clawer = new MagnetClawer();
 		RWJson rw = new RWJson();
 		magnet_list = new HashSet<>();
 		clawer.initialnization(rw);
-		clawer.scan_url(web, 0, rw);
+		clawer.scan_url(web, 0, rw, RETRY);
 		JSONArray arr = rw.incremental_add_arr();
 		
 		if( RWJson.INCREMENT_COUNT > 0){
