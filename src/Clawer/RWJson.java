@@ -195,7 +195,7 @@ public class RWJson {
 		for( int i = 0 ; i < sizen ; i++){
 			for( int j = 0 ; j < sizeo ; j++){
 				JSONObject obn = newArray.getJSONObject(i);
-				JSONObject obo = oldArray.getJSONObject(i);
+				JSONObject obo = oldArray.getJSONObject(j);
 				String temp1 = (String) obn.get("title");
 				String temp2 = (String) obo.get("title");
 				if(temp1.equals(temp2)){
@@ -206,7 +206,7 @@ public class RWJson {
 					System.out.println(temp1);
 					INCREMENT_COUNT++;
 					INCREMENTAL_LIST += temp1+",";
-					oldArray.add(newArray.getJSONObject(i));
+					oldArray.add(obn);
 				}
 			}
 		}
@@ -215,7 +215,6 @@ public class RWJson {
 		}
 		return oldArray;
 	}
-	
 	public void write_json_arr(JSONArray arr){
 		String content = "";
 		int size = arr.size();
@@ -231,7 +230,12 @@ public class RWJson {
 				for(int j = 0 ; j < length ; j++){
 					if(j == length - 1){
 						if( i == size-1 ){
-							content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
+							if( job.containsKey("url") ){
+								content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
+							}else{
+								content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ]\n}";
+							}
+							
 							break;
 						}
 						content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ]\n},";
@@ -246,10 +250,18 @@ public class RWJson {
 				}
 			}else{
 				if( i == size-1 ){
-					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
+					if( job.containsKey("url") ){
+						content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
+					}else{
+						content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ]\n}";
+					}
 					break;
 				}
-				content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ],\n  \"url\" : \""+job.getString("url")+"\"\n},";
+				if( job.containsKey("url") ){
+					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ],\n  \"url\" : \""+job.getString("url")+"\"\n},";
+				}else{
+					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ]\n},";
+				}
 			}
 		}
 		WriteFile(RESOURCEPATH, "["+content+"\n]");
