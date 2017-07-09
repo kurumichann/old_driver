@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -17,19 +18,21 @@ public class RWJson {
 
 	// for sever delete src/Clawer/
 	// for local env make sure prefix is "src/Clawer/" 
-//	static String  NUMPATH = "src/Clawer/totalrows.text";
-//	static String  VIEWED = "src/Clawer/viewed_list.text";
-//	static String  VIEWEDBAK = "src/Clawer/viewed_list_bak.text";
-//	static String  INCREMENT = "src/Clawer/incremental_count.text";
-//	static String  RESOURCEPATH = "src/Clawer/resourcelist.json";
-//	static String  RESOURCEBAKPATH = "src/Clawer/resourcelist_bak.json";
-	static String  RESOURCEPATH = "resourcelist.json";
-	static String  RESOURCEBAKPATH = "bak/resourcelist_bak.json";
-	static String  NUMPATH = "totalrows.text";
-	static String  VIEWED = "viewed_list.text";
-	static String  VIEWEDBAK = "bak/viewed_list_bak.text";
-	static String  INCREMENT = "incremental_count.text";
-	static String  INCREMENT_LIST_PATH = "incremental_list.text";
+	static String  NUMPATH = "src/Clawer/totalrows.text";
+	static String  VIEWED = "src/Clawer/viewed_list.text";
+	static String  VIEWEDBAK = "src/Clawer/viewed_list_bak.text";
+	static String  INCREMENT = "src/Clawer/incremental_count.text";
+	static String  RESOURCEPATH = "src/Clawer/resourcelist.json";
+	static String  RESOURCEBAKPATH = "src/Clawer/resourcelist_bak.json";
+	static String  INCREMENT_LIST_PATH = "src/Clawerincremental_list.text";
+	
+//	static String  RESOURCEPATH = "resourcelist.json";
+//	static String  RESOURCEBAKPATH = "bak/resourcelist_bak.json";
+//	static String  NUMPATH = "totalrows.text";
+//	static String  VIEWED = "viewed_list.text";
+//	static String  VIEWEDBAK = "bak/viewed_list_bak.text";
+//	static String  INCREMENT = "incremental_count.text";
+//	static String  INCREMENT_LIST_PATH = "incremental_list.text";
 	static String  INCREMENTAL_LIST = "";
 	static int	   INCREMENT_COUNT = 0;
 	
@@ -143,7 +146,7 @@ public class RWJson {
 		}
 		
 	}
-	public void set_viewed_list(HashSet<String> list){
+	public void set_viewed_list(Set<String> list){
 		Iterator<String> iterator = list.iterator();
 		String content = "";
 		while(iterator.hasNext()){
