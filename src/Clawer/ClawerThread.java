@@ -92,12 +92,8 @@ public class ClawerThread implements Runnable{
 					break;
 				}
 			}
-			try{
-			  if(temp.charAt(quote_end) != '\"'){
-				 continue;
-				 }
-			}catch(Exception e){
-				System.out.println(temp);
+			if(temp.charAt(quote_end) != '\"'){
+				continue;
 			}
 			href = temp.substring(quote_start, quote_end);
 			if(check_a_label(href) && !visitedList.contains(href)){
