@@ -1,2 +1,2 @@
 # old_driver
-单线程增量爬取神社资源nep
+a multiple thread tool to collect data from hacg.com 
