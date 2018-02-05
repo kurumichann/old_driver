@@ -87,8 +87,17 @@ public class ClawerThread implements Runnable{
 		for(String temp : get_group_list(text, TAG_A_PATTERN)){
 			quote_start = temp.indexOf("href")+6;
 			quote_end = quote_start; 
-			while(temp.charAt(++quote_end) != '\"'){
-				
+			while(++quote_end<temp.length()){
+				if(temp.charAt(quote_end) == '\"'){
+					break;
+				}
+			}
+			try{
+			  if(temp.charAt(quote_end) != '\"'){
+				 continue;
+				 }
+			}catch(Exception e){
+				System.out.println(temp);
 			}
 			href = temp.substring(quote_start, quote_end);
 			if(check_a_label(href) && !visitedList.contains(href)){
@@ -103,7 +112,7 @@ public class ClawerThread implements Runnable{
 		if(label.contains("#comment")||label.contains("?replytocom")){
 			return false;
 		}
-		if(label.contains("www.hacg.li")||label.contains("www.hacg.fi")||label.contains("www.hacg.wiki")||label.contains("www.llss.me")){
+		if(label.contains("www.hacg.li")||label.contains("www.hacg.fi")||label.contains("www.hacg.wiki")||label.contains("www.llss.me")||label.contains("www.hacg.love")){
 			return true;
 		}
 		return false;
@@ -151,12 +160,11 @@ public class ClawerThread implements Runnable{
 					content += "\n              \""+magnets.get(0)+"\"\n            ],\n  \"url\" : \""+url+"\"\n},";
 				}
 				content_queue.add(content);
-				System.out.println("current depth: "+depth+"  current url:  "+url+" current thread id: "+THREADNAME);
+				System.out.println("thread id: "+THREADNAME+" current depth: "+depth+"  current url:  "+url);
 				System.out.println(title+"  "+magnets.toString());
 			}
 			visitedList.add(url);
 		}catch(HttpStatusException e){
-			e.printStackTrace();
 			if(e.toString().contains("Status=4")){
 				return;
 			}
@@ -186,7 +194,7 @@ public class ClawerThread implements Runnable{
 				continue;
 			}
 			if( retry_counts != 0 && !sub_url.equals("http://www.hacg.wiki/wp/")){
-				scan_url(sub_url, depth, retry_counts-1);
+				scan_url(sub_url, depth+1, retry_counts);
 			}
 
 		}

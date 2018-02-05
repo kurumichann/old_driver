@@ -1,4 +1,4 @@
 #bin/bash
->out.log;
->error.log;
->incremental_count.text;
+>$1/out.log;
+>$1/error.log;
+>$1/incremental_count.text;

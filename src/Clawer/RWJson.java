@@ -21,7 +21,7 @@ public class RWJson {
 	static String  NUMPATH = "src/Clawer/totalrows.text";
 	static String  VIEWED = "src/Clawer/viewed_list.text";
 	static String  VIEWEDBAK = "src/Clawer/viewed_list_bak.text";
-	static String  INCREMENT = "src/Clawer/incremental_count.text";
+	static String  INCREMENTPATH = "src/Clawer/incremental_count.text";
 	static String  RESOURCEPATH = "src/Clawer/resourcelist.json";
 	static String  RESOURCEBAKPATH = "src/Clawer/resourcelist_bak.json";
 	static String  INCREMENT_LIST_PATH = "src/Clawerincremental_list.text";
@@ -39,6 +39,7 @@ public class RWJson {
 	public JSONArray ReadFile(String path) {
 		BufferedReader reader = null;
 		String laststr = "";
+		JSONArray jsonArray;
 		try {
 			FileInputStream fileInputStream = new FileInputStream(path);
 			InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, "UTF-8");
@@ -50,7 +51,11 @@ public class RWJson {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		JSONArray jsonArray = JSONArray.fromObject(laststr);
+		try{
+		    jsonArray = new JSONArray();
+		}catch(Exception e){
+			return null;
+		}
 		return jsonArray;
 	}
 	
@@ -127,7 +132,7 @@ public class RWJson {
 	
 	public void set_incremental_count(int count){
 		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(INCREMENT));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(INCREMENTPATH));
 			writer.write("count="+String.valueOf(count));
 			writer.flush();
 			writer.close();
@@ -149,8 +154,10 @@ public class RWJson {
 	public void set_viewed_list(Set<String> list){
 		Iterator<String> iterator = list.iterator();
 		String content = "";
-		while(iterator.hasNext()){
-			content += iterator.next()+"\r\n";
+		synchronized (list) {
+		   while(iterator.hasNext()){
+			   content += iterator.next()+"\r\n";
+		   }
 		}
 		try {
 			BufferedWriter write = new BufferedWriter(new FileWriter(VIEWED));
@@ -213,7 +220,7 @@ public class RWJson {
 				}
 			}
 		}
-		if(INCREMENT.length() != 0){
+		if(INCREMENTAL_LIST.length() != 0){
 			INCREMENTAL_LIST = INCREMENTAL_LIST.substring(0, INCREMENTAL_LIST.length()-1);
 		}
 		return oldArray;
