@@ -19,11 +19,12 @@ public class ClawerThread implements Runnable{
 
 	String text;
 	private final String THREADNAME;
-	private final int MAXDEPTH = 40;
+	private final int MAXDEPTH = 100;
 	private final String URL;
 	private final Pattern TAG_A_PATTERN = Pattern.compile("<a.*?href=.*?>");
 	private final Pattern MAGNET_PATTERN = Pattern.compile("[^0-9a-zA-Z][0-9a-zA-Z]{16,25}[\u4e00-\u9fa5]{0,10}[0-9a-zA-Z]{16,25}[\r|\n|<|&]");
 	private final Pattern TAG_TITLE_PATTERN = Pattern.compile("<title>(.+)</title>");
+	private final Pattern ISSUE_TIME_PATTERN = Pattern.compile("(?<=<time class.{0,70}>).*(?=</time>)");
 	private static final int RETRY = 5;
 	public static Set<String> visitedList = Collections.synchronizedSet(new HashSet<String>());
 	public static Set<String> magnet_list = Collections.synchronizedSet(new HashSet<String>());
@@ -41,7 +42,14 @@ public class ClawerThread implements Runnable{
 			String html= connection.get().html();
 			return html;
 	}
-	
+	public  String getIssueTime(String text){
+		Matcher matcher = ISSUE_TIME_PATTERN.matcher(text);
+		matcher.matches();
+		if(matcher.find()){
+			return matcher.group();
+		}
+		return "";
+	}
 	public ArrayList<String> get_magnet(String text){
 	    ArrayList<String> temp = new ArrayList<>();
 	    LinkedList<String> magnets = get_group_list(text, MAGNET_PATTERN);
@@ -87,9 +95,15 @@ public class ClawerThread implements Runnable{
 		for(String temp : get_group_list(text, TAG_A_PATTERN)){
 			quote_start = temp.indexOf("href")+6;
 			quote_end = quote_start; 
-			while(++quote_end<temp.length()){
+			while(quote_end<temp.length()){
+				try{
+				quote_end++;
 				if(temp.charAt(quote_end) == '\"'){
 					break;
+				}
+				}catch(StringIndexOutOfBoundsException e){
+					e.printStackTrace();
+					System.out.println(temp+"\n"+url);
 				}
 			}
 			if(temp.charAt(quote_end) != '\"'){
@@ -135,14 +149,16 @@ public class ClawerThread implements Runnable{
 			text = get_response_html(url);
 			sub_links = get_sub_links(text, url);
 			String title = get_title(text);
+			String time = getIssueTime(text);
 			//deal with next url while title or magnets are null
 			if(title != null){			
+				title = title.replace("\\", "");
 				magnets = get_magnet(text);
 				if (magnets.isEmpty()) {
 					visitedList.add(url);
 					return;
 				}
-				content += "\n{\n  \"title\" : \"" + title +"\",\n  \"magnet\" :  [";
+				content += "\n{\n  \"title\" : \"" + title +"\",\n  \"time\" : \""+time+"\",\n  \"magnet\" :  [";
 				//store magnets in format
 				if(magnets.size() > 1){
 					for(int i = 0 ; i < magnets.size() ; i++){

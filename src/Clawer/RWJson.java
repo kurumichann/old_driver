@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 public class RWJson {
@@ -52,11 +53,11 @@ public class RWJson {
 			e.printStackTrace();
 		}
 		try{
-		    jsonArray = new JSONArray();
-		}catch(Exception e){
-			return null;
+			jsonArray = JSONArray.fromObject(laststr);
+		}catch(JSONException e){
+			return new JSONArray();
 		}
-		return jsonArray;
+	    return jsonArray;
 	}
 	
 	public void WriteFile(String path, String text){
@@ -274,7 +275,7 @@ public class RWJson {
 				}
 			}
 		}
-		WriteFile(RESOURCEPATH, "["+content+"\n]");
+		WriteFile(RESOURCEBAKPATH, "["+content+"\n]");
 		
 	}
 	//combine viewed list with bak.text
