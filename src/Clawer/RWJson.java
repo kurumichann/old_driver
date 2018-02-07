@@ -80,7 +80,6 @@ public class RWJson {
 	
 	public void load_magnet_list(HashSet<String> hash){
 		BufferedReader reader = null;
-		String laststr = "";
 		int start = 0;
 		int end = 0; 
 		try {
@@ -125,7 +124,6 @@ public class RWJson {
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -144,7 +142,7 @@ public class RWJson {
 	public void set_incremental_list(String list){
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(INCREMENT_LIST_PATH));
-			writer.write("list='"+list+"'");http://221.176.66.85:81/wlan-portal-web/portal/free/images/index_top01.jpg
+			writer.write("list='"+list+"'");
 			writer.flush();
 			writer.close();
 		} catch (IOException e) {
@@ -227,14 +225,15 @@ public class RWJson {
 		return oldArray;
 	}
 	public void write_json_arr(JSONArray arr){
-		String content = "";
+		StringBuffer content = new StringBuffer();
 		int size = arr.size();
 		JSONObject job;
 		String[] magnets;
 		int length;
 		for( int i = 0 ; i < size ; i++){
 			job = arr.getJSONObject(i);
-			content += "\n{\n  \"title\" : \"" + job.getString("title") +"\",\n  \"magnet\" :  [";
+			content.append("\n{\n  \"title\" : \"").append(job.getString("title")).append("\",\n  \"time\" : \"")
+		       .append(job.getString("time")).append("\",\n  \"magnet\" :  [");
 			magnets = job.getString("magnet").split(",");
 			length = magnets.length;
 			if( length > 1){
@@ -242,40 +241,45 @@ public class RWJson {
 					if(j == length - 1){
 						if( i == size-1 ){
 							if( job.containsKey("url") ){
-								content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
+								content.append("\n              \"").append(magnets[j].replace("\"]", "")).append("\"\n           ],\n  \"url\" : \"")
+							           .append(job.getString("url")).append("\"\n},");
 							}else{
-								content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ]\n}";
+								content.append("\n              \"").append(magnets[j].replace("\"]", "")).append("\"\n           ],\n  \"url\" : \"")
+							           .append("\"\n},");
 							}
 							
 							break;
 						}
-						content += "\n              "+magnets[j].replace("\"]", "")+"\"\n           ]\n},";
+						content.append("\n              ").append(magnets[j].replace("\"]", "")).append("\"\n           ]\n},");
 						break;
 					}
 					if( j == 0 ){
-						content += "\n              "+magnets[j].replace("[", "")+",";
+						content.append("\n              ").append(magnets[j].replace("[", "")).append(",");
 						continue;
 					}
 
-					content += "\n              "+magnets[j]+",";
+					content.append("\n              ").append(magnets[j]).append(",");
 				}
 			}else{
 				if( i == size-1 ){
 					if( job.containsKey("url") ){
-						content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ],\n  \"url\" : \""+job.getString("url")+"\"\n}";
+						content.append("\n              ").append(magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ],\n  \"url\" : \"")
+						       .append(job.getString("url")).append("\"\n}");
 					}else{
-						content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ]\n}";
+						content.append("\n              ").append(magnets[0].replace("\"]", "").replace("[", "")+"\"\n           ],\n  \"url\" : \"")
+					           .append("\"\n}");
 					}
 					break;
 				}
 				if( job.containsKey("url") ){
-					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ],\n  \"url\" : \""+job.getString("url")+"\"\n},";
+					content.append("\n              ").append(magnets[0].replace("\"]", "").replace("[", "")).append("\"\n            ],\n  \"url\" : \"")
+					       .append(job.getString("url")).append("\"\n},");
 				}else{
-					content += "\n              "+magnets[0].replace("\"]", "").replace("[", "")+"\"\n            ]\n},";
+					content.append("\n              ").append(magnets[0].replace("\"]", "").replace("[", "")).append("\"\n            ]\n},");
 				}
 			}
 		}
-		WriteFile(RESOURCEBAKPATH, "["+content+"\n]");
+		WriteFile(RESOURCEBAKPATH, "["+content.append("\n]"));
 		
 	}
 	//combine viewed list with bak.text
@@ -322,11 +326,11 @@ public class RWJson {
 				}
 			}
 		}
-		String content = "";
+		StringBuffer content = new StringBuffer();
 		for( String tmp : oldarr){
-			content += tmp+"\n";
+			content.append(tmp).append("\n");
 		}
-		WriteFile(VIEWED, content);
+		WriteFile(VIEWED, content.toString());
 	}
 //	public static void main(String[] args) {
 //		RWJson json = new RWJson();

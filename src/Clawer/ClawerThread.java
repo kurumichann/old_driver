@@ -97,7 +97,7 @@ public class ClawerThread implements Runnable{
 			quote_end = quote_start; 
 			while(quote_end<temp.length()){
 				try{
-				quote_end++;
+				    quote_end++;
 				if(temp.charAt(quote_end) == '\"'){
 					break;
 				}
@@ -144,7 +144,7 @@ public class ClawerThread implements Runnable{
 		}
 		ArrayList<String> magnets;
 		ArrayList<String> sub_links;
-		String content = "";
+		StringBuffer content = new StringBuffer();
 		try {
 			text = get_response_html(url);
 			sub_links = get_sub_links(text, url);
@@ -158,20 +158,23 @@ public class ClawerThread implements Runnable{
 					visitedList.add(url);
 					return;
 				}
-				content += "\n{\n  \"title\" : \"" + title +"\",\n  \"time\" : \""+time+"\",\n  \"magnet\" :  [";
+				content.append("\n{\n  \"title\" : \"").append(title).append("\",\n  \"time\" : \"")
+				       .append(time).append("\",\n  \"magnet\" :  [");
 				//store magnets in format
 				if(magnets.size() > 1){
 					for(int i = 0 ; i < magnets.size() ; i++){
 						if(i == magnets.size() - 1){
-							content += "\n              \""+magnets.get(i)+"\"\n           ],\n  \"url\" : \""+url+"\"\n},";
+							content.append("\n              \"").append(magnets.get(i)).append("\"\n           ],\n  \"url\" : \"")
+							       .append(url).append("\"\n},");
 							break;
 						}
-						content += "\n              \""+magnets.get(i)+"\",";
+						content.append("\n              \"").append(magnets.get(i)).append("\",");
 					}
 				}else{
-					content += "\n              \""+magnets.get(0)+"\"\n            ],\n  \"url\" : \""+url+"\"\n},";
+					content.append("\n              \"").append(magnets.get(0)).append("\"\n            ],\n  \"url\" : \"")
+					       .append(url).append("\"\n},");
 				}
-				content_queue.add(content);
+				content_queue.add(content.toString());
 				System.out.println("thread id: "+THREADNAME+" current depth: "+depth+"  current url:  "+url);
 				System.out.println(title+"  "+magnets.toString());
 			}
